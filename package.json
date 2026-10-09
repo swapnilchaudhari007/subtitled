@@ -1,0 +1,17 @@
+{
+  "name": "subtitled",
+  "version": "1.0.0",
+  "description": "A language-immersion coach that builds your study plan out of things you already love, using Qloo's taste graph.",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch --env-file-if-exists=.env server.js",
+    "test": "node --test test/*.test.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "author": "Swapnil Chaudhari",
+  "license": "MIT"
+}
