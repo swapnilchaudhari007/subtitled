@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Subtitled — learn a language through your own taste</title>
+  <meta name="description" content="Tell Subtitled what you already love. It builds a 4-week language-immersion plan out of films, series, music, books and places that match your taste, using Qloo's taste graph.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="/"><span class="brand-mark">[CC]</span> Subtitled</a>
+    <nav><a href="#how">How it works</a><a href="https://github.com/Swapnilchaudhari007/subtitled" target="_blank" rel="noopener">GitHub</a></nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow">Language learning, but it's your taste</p>
+      <h1>Stop watching <s>Money Heist</s> because a listicle told you to.</h1>
+      <p class="lede">Tell us three to six things you already love - shows, films, bands, books, games. Subtitled uses Qloo's taste graph to find what <em>you</em> would enjoy in the language you're learning, then turns it into a four-week plan.</p>
+      <div class="subtitle-bar" aria-hidden="true"><span id="hello-line">— Konnichiwa. Let's find your kind of thing.</span></div>
+    </section>
+
+    <form id="form" class="card form" autocomplete="off">
+      <div class="field">
+        <label>I'm learning</label>
+        <div class="chips" id="languages" role="radiogroup"></div>
+      </div>
+
+      <div class="field">
+        <label>Where I'm at</label>
+        <div class="chips" id="levels" role="radiogroup"></div>
+      </div>
+
+      <div class="field">
+        <label for="fav-input">Things I love <span class="hint">(any language, any medium — 2 to 6)</span></label>
+        <div class="tagbox" id="tagbox">
+          <div id="fav-list" class="fav-list"></div>
+          <input id="fav-input" type="text" placeholder="e.g. Breaking Bad, Arctic Monkeys, The Witcher 3…" aria-autocomplete="list" aria-controls="suggest">
+        </div>
+        <ul id="suggest" class="suggest" role="listbox" hidden></ul>
+        <div class="examples">Try: <button type="button" data-ex="Breaking Bad|Arctic Monkeys|Gone Girl|The Last of Us">thriller fan</button><button type="button" data-ex="Studio Ghibli|Taylor Swift|Pride and Prejudice|Stardew Valley">cozy & romantic</button><button type="button" data-ex="Interstellar|Radiohead|Dune|Black Mirror">sci-fi head</button></div>
+      </div>
+
+      <div class="field">
+        <label for="city">My city <span class="hint">(optional — finds somewhere to practise ordering food)</span></label>
+        <input id="city" type="text" placeholder="e.g. Mumbai, London, New York">
+      </div>
+
+      <button class="go" type="submit" id="go">Build my plan</button>
+      <p class="err" id="form-err" role="alert"></p>
+    </form>
+
+    <section id="agent" class="card agent" hidden>
+      <h2>What the agent is doing</h2>
+      <ol id="steps" class="steps"></ol>
+    </section>
+
+    <section id="result" hidden></section>
+
+    <section id="how" class="how">
+      <h2>How it works</h2>
+      <div class="how-grid">
+        <div><b>1. Read your taste</b><p>Each favourite is resolved to a Qloo entity, then we pull the tags they share — that's your fingerprint. "Dark humour, slow burn, moral grey areas" says more than "drama".</p></div>
+        <div><b>2. Cross the language line</b><p>The agent asks Qloo's Insights API for films and series released in the target country, and artists, books and podcasts carrying the right language tags — all ranked by affinity to <i>your</i> favourites.</p></div>
+        <div><b>3. Check & retry</b><p>Empty result? Wrong language crept in? The agent loosens popularity, swaps country formats, or turns a hard filter into a soft signal, and tells you what it did.</p></div>
+        <div><b>4. Make it a habit</b><p>Results become a four-week ladder matched to your level: music first for beginners, books and native podcasts for advanced learners, and a real place to go order food.</p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">Built by Swapnil Chaudhari for the Qloo Agentic Hackathon · Taste data from <a href="https://www.qloo.com" target="_blank" rel="noopener">Qloo</a> · MIT licensed</footer>
+
+  <script src="/app.js" type="module"></script>
+</body>
+</html>
