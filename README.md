@@ -6,7 +6,7 @@ Every "learn Japanese with anime" list gives everyone the same five titles. I tr
 
 Subtitled does that on purpose. You tell it two to six things you love — in any language, any medium — plus the language you're learning and your level. An agent then uses [Qloo](https://www.qloo.com)'s taste graph to find films, series, artists, books, podcasts and even restaurants *in that language* that sit close to your taste, and lays them out as a four-week plan.
 
-**Live demo:** https://subtitled.onrender.com
+**Live demo:** https://subtitled-zwlt.onrender.com
 *(free hosting, so the first load after a quiet spell can take ~30 seconds)*
 
 ## What it does
