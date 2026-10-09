@@ -6,7 +6,7 @@ import { readFile } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { runAgent } from './lib/agent.js';
-import { searchEntities, hasKey } from './lib/qloo.js';
+import { searchEntities, hasKey, qlooGet } from './lib/qloo.js';
 import { LANGUAGES, LEVELS } from './lib/languages.js';
 
 const PORT = process.env.PORT || 3000;
@@ -44,6 +44,31 @@ const server = http.createServer(async (req, res) => {
   try {
     if (url.pathname === '/api/health') {
       return json(res, 200, { ok: true, qloo: hasKey(), llm: Boolean(process.env.GEMINI_API_KEY) });
+    }
+
+    // quick check that every Qloo endpoint we depend on answers the way we expect
+    if (url.pathname === '/api/selftest') {
+      if (limited(ip + ':t', 10)) return json(res, 429, { error: 'Slow down a little' });
+      const probe = async (path, params) => {
+        try {
+          const body = await qlooGet(path, params);
+          return { ok: true, sample: JSON.stringify(body).slice(0, 700) };
+        } catch (err) {
+          return { ok: false, status: err.status, body: JSON.stringify(err.body || err.message).slice(0, 400) };
+        }
+      };
+      const q = url.searchParams.get('q') || 'Breaking Bad';
+      const out = {};
+      out.searchTyped = await probe('/search', { query: q, types: 'urn:entity:movie,urn:entity:tv_show', take: 2 });
+      out.searchPlain = await probe('/search', { query: q, take: 2 });
+      out.tags = await probe('/v2/tags', { 'filter.query': 'j-pop', take: 3 });
+      const id = (out.searchPlain.sample || out.searchTyped.sample || '').match(/"entity_id":"([^"]+)"/)?.[1];
+      if (id) {
+        out.entities = await probe('/entities', { entity_ids: id });
+        out.movieJapan = await probe('/v2/insights', { 'filter.type': 'urn:entity:movie', 'signal.interests.entities': id, 'filter.release_country': 'Japan', take: 2 });
+        out.movieJP = await probe('/v2/insights', { 'filter.type': 'urn:entity:movie', 'signal.interests.entities': id, 'filter.release_country': 'JP', take: 2 });
+      }
+      return json(res, 200, out);
     }
 
     if (url.pathname === '/api/options') {
