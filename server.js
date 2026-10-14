@@ -22,6 +22,11 @@ function limited(ip, max = 20, windowMs = 10 * 60 * 1000) {
   hits.set(ip, list);
   return list.length > max;
 }
+// drop idle IPs so the limiter map can't grow forever
+setInterval(() => {
+  const cutoff = Date.now() - 10 * 60 * 1000;
+  for (const [ip, list] of hits) if (!list.some(t => t > cutoff)) hits.delete(ip);
+}, 60 * 1000).unref();
 
 function json(res, status, body) {
   res.writeHead(status, { 'content-type': 'application/json' });
@@ -32,9 +37,13 @@ async function readBody(req) {
   let raw = '';
   for await (const chunk of req) {
     raw += chunk;
-    if (raw.length > 10_000) throw new Error('too big');
+    if (raw.length > 10_000) throw Object.assign(new Error('Request body too large'), { status: 413 });
   }
-  return raw ? JSON.parse(raw) : {};
+  try {
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    throw Object.assign(new Error('Invalid JSON body'), { status: 400 });
+  }
 }
 
 const server = http.createServer(async (req, res) => {
@@ -118,7 +127,8 @@ const server = http.createServer(async (req, res) => {
     res.writeHead(200, { 'content-type': TYPES[extname(file)] || 'application/octet-stream', 'cache-control': 'public, max-age=300' });
     res.end(data);
   } catch (err) {
-    if (err.code === 'ENOENT') return json(res, 404, { error: 'Not found' });
+    if (err.code === 'ENOENT' || err.code === 'EISDIR') return json(res, 404, { error: 'Not found' });
+    if (err.status && err.status < 500 && !res.headersSent) return json(res, err.status, { error: err.message });
     console.error(err);
     if (!res.headersSent) json(res, 500, { error: 'Something broke on our side' });
     else res.end();
