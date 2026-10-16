@@ -3,7 +3,7 @@
 
 import http from 'node:http';
 import { readFile } from 'node:fs/promises';
-import { extname, join, normalize } from 'node:path';
+import { extname, join, normalize, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { runAgent } from './lib/agent.js';
 import { searchEntities, hasKey, qlooGet } from './lib/qloo.js';
@@ -48,7 +48,9 @@ async function readBody(req) {
 
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, 'http://x');
-  const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
+  // The left-most X-Forwarded-For entry is whatever the client sent, so anyone could rotate it
+  // to dodge the rate limiter. The right-most entry is the one our proxy (Render) appended.
+  const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',').pop().trim();
 
   try {
     if (url.pathname === '/api/health') {
@@ -122,7 +124,7 @@ const server = http.createServer(async (req, res) => {
     let path = normalize(url.pathname).replace(/^(\.\.[/\\])+/, '');
     if (path === '/' || !extname(path)) path = '/index.html';
     const file = join(PUBLIC, path);
-    if (!file.startsWith(PUBLIC)) return json(res, 403, { error: 'nope' });
+    if (!file.startsWith(PUBLIC + sep)) return json(res, 403, { error: 'nope' });
     const data = await readFile(file);
     res.writeHead(200, { 'content-type': TYPES[extname(file)] || 'application/octet-stream', 'cache-control': 'public, max-age=300' });
     res.end(data);
