@@ -1,5 +1,7 @@
 # Subtitled
 
+![Qloo](https://img.shields.io/badge/Qloo-taste%20graph-6C2BD9) ![Node.js](https://img.shields.io/badge/Node.js-server-339933?logo=nodedotjs&logoColor=white) [![hosted](https://img.shields.io/badge/hosted-Render-46E3B7?logo=render&logoColor=white)](https://subtitled-zwlt.onrender.com) ![hackathon](https://img.shields.io/badge/hackathon-Qloo%20Agentic-purple) [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+
 **Learn a language through things you'd actually watch, play and listen to.**
 
 Every "learn Japanese with anime" list gives everyone the same five titles. I tried that. I got bored of Spirited Away the third time and dropped it. The stuff that stuck was whatever happened to be close to what I already liked.
@@ -74,3 +76,7 @@ test/              agent test against a mock Qloo server
 Node.js, Qloo Insights / Search / Tags APIs, optional Gemini, Render.
 
 Made by [Swapnil Chaudhari](https://github.com/Swapnilchaudhari007) for the Qloo Agentic Hackathon 2026. MIT licensed.
+
+## License
+
+[MIT](LICENSE)
